@@ -2,6 +2,7 @@ import React from "react";
 import { Flex, Heading, Box, Button, Text, Link } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { useLogOutMutation, useMeQuery } from "../generated/graphql";
+import { isServer } from "../utils/isServer";
 
 const MenuItems = ({ children }: any) => (
 	<Text mt={{ base: 4, md: 0 }} mr={6} display='block'>
@@ -13,8 +14,10 @@ const MenuItems = ({ children }: any) => (
 const Header = (props: any) => {
 	const [show, setShow] = React.useState(false);
 	const handleToggle = () => setShow(!show);
-	const [{ data, fetching }] = useMeQuery();
 	const [{ fetching: logoutFetching }, logout] = useLogOutMutation();
+	const [{ data, fetching }] = useMeQuery({
+		pause: isServer(),
+	});
 
 	let body = null;
 	// data is loading

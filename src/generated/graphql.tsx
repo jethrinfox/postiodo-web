@@ -32,19 +32,22 @@ export type QueryPostArgs = {
 export type Post = {
   __typename?: 'Post';
   id: Scalars['Float'];
+  title: Scalars['String'];
+  text: Scalars['String'];
+  points: Scalars['Float'];
+  creatorId: Scalars['Float'];
   createdAt: Scalars['DateTime'];
   updatedAt: Scalars['DateTime'];
-  title: Scalars['String'];
 };
 
 
 export type User = {
   __typename?: 'User';
   id: Scalars['Float'];
-  createdAt: Scalars['DateTime'];
-  updatedAt: Scalars['DateTime'];
   username: Scalars['String'];
   email: Scalars['String'];
+  createdAt: Scalars['DateTime'];
+  updatedAt: Scalars['DateTime'];
 };
 
 export type Mutation = {
@@ -61,7 +64,7 @@ export type Mutation = {
 
 
 export type MutationCreatePostArgs = {
-  title: Scalars['String'];
+  input: PostInput;
 };
 
 
@@ -97,6 +100,11 @@ export type MutationForgotPasswordArgs = {
   email: Scalars['String'];
 };
 
+export type PostInput = {
+  title: Scalars['String'];
+  text: Scalars['String'];
+};
+
 export type UserResponse = {
   __typename?: 'UserResponse';
   errors?: Maybe<Array<FieldError>>;
@@ -122,7 +130,7 @@ export type RegularErrorFragment = (
 
 export type RegularPostFragment = (
   { __typename?: 'Post' }
-  & Pick<Post, 'id' | 'createdAt' | 'updatedAt' | 'title'>
+  & Pick<Post, 'id' | 'title' | 'text' | 'points' | 'creatorId' | 'createdAt' | 'updatedAt'>
 );
 
 export type RegularUserFragment = (
@@ -156,7 +164,7 @@ export type ChangepasswordMutation = (
 );
 
 export type CreatePostMutationVariables = Exact<{
-  title: Scalars['String'];
+  input: PostInput;
 }>;
 
 
@@ -275,9 +283,12 @@ export type PostsQuery = (
 export const RegularPostFragmentDoc = gql`
     fragment RegularPost on Post {
   id
+  title
+  text
+  points
+  creatorId
   createdAt
   updatedAt
-  title
 }
     `;
 export const RegularErrorFragmentDoc = gql`
@@ -315,8 +326,8 @@ export function useChangepasswordMutation() {
   return Urql.useMutation<ChangepasswordMutation, ChangepasswordMutationVariables>(ChangepasswordDocument);
 };
 export const CreatePostDocument = gql`
-    mutation CreatePost($title: String!) {
-  createPost(title: $title) {
+    mutation CreatePost($input: PostInput!) {
+  createPost(input: $input) {
     ...RegularPost
   }
 }

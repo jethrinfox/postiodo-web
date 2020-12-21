@@ -9,7 +9,6 @@ import { useRouter } from "next/router";
 import { createUrqlClient } from "../utils/createUrqlClient";
 import { withUrqlClient } from "next-urql";
 import Header from "../components/Header";
-import NextLink from "next/link";
 
 export const Login: React.FC<{}> = () => {
 	const [, login] = useLoginMutation();
@@ -27,7 +26,11 @@ export const Login: React.FC<{}> = () => {
 							setErrors(toErrorMap(response.data.login.errors));
 						} else if (response.data?.login.user) {
 							// logged in
-							router.push("/");
+							if (typeof router.query.next === "string") {
+								router.push(router.query.next);
+							} else {
+								router.push("/");
+							}
 						}
 					}}>
 					{({ isSubmitting }) => (
@@ -45,9 +48,9 @@ export const Login: React.FC<{}> = () => {
 							</Box>
 							<Flex justifyContent='flex-end'>
 								<Box mt={2}>
-									<NextLink href='/forgot-password'>
-										<Link>forgot password?</Link>
-									</NextLink>
+									<Link href='/forgot-password'>
+										forgot password?
+									</Link>
 								</Box>
 							</Flex>
 							<Button

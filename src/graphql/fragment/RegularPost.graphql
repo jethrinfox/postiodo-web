@@ -2,6 +2,7 @@ fragment RegularPost on Post {
 	id
 	title
 	text
+	textSnippet
 	points
 	creatorId
 	createdAt

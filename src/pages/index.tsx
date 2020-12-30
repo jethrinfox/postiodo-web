@@ -8,7 +8,7 @@ import { createUrqlClient } from "../utils/createUrqlClient";
 
 const Index = () => {
 	const [variables, setVariables] = useState({
-		limit: 6,
+		limit: 5,
 		cursor: null as null | string,
 	});
 	const [{ data, fetching }] = usePostsQuery({
@@ -39,12 +39,12 @@ const Index = () => {
 						<Skeleton height='50px' />
 					</>
 				) : (
-					data!.posts.map(({ title, id, textSnippet }) => (
-						<Feature key={id} title={title} text={textSnippet} />
+					data?.posts.posts.map((post) => (
+						<Feature key={post.id} post={post} />
 					))
 				)}
 			</Stack>
-			{data ? (
+			{data && data.posts.hasMore ? (
 				<Flex my={8} justifyContent='center'>
 					<Button
 						colorScheme='teal'
@@ -52,8 +52,9 @@ const Index = () => {
 							setVariables({
 								limit: variables.limit,
 								cursor:
-									data?.posts[data.posts.length - 1]
-										.createdAt,
+									data?.posts.posts[
+										data.posts.posts.length - 1
+									].createdAt,
 							})
 						}
 						isLoading={fetching}>

@@ -1,21 +1,23 @@
 // import React from 'react'
-import { Box, Heading, Text } from "@chakra-ui/react";
+import { Box, Flex, Heading, Text } from "@chakra-ui/react";
+import React from "react";
+import { RegularPostFragment } from "../generated/graphql";
+import { VoteSection } from "./VoteSection";
 
 interface FeatureProps {
-	post: {
-		title: string;
-		textSnippet: string;
-	};
+	post: RegularPostFragment;
 }
 
 const Feature: React.FC<FeatureProps> = ({ post }) => {
-	const { title, textSnippet } = post;
-
 	return (
-		<Box p={5} shadow='md' borderWidth='1px'>
-			<Heading fontSize='xl'>{title}</Heading>
-			<Text mt={4}>{textSnippet}</Text>
-		</Box>
+		<Flex p={5} shadow='md' borderWidth='1px'>
+			<VoteSection post={post} />
+			<Box>
+				<Heading fontSize='xl'>{post.title}</Heading>
+				posted by {post.creator.username}
+				<Text mt={4}>{post.textSnippet}</Text>
+			</Box>
+		</Flex>
 	);
 };
 

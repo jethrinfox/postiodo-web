@@ -89,7 +89,7 @@ const Header = (props: any) => {
 				<Flex align='center' mr={5}>
 					<Link href='/'>
 						<Heading as='h1' size='lg' letterSpacing={"-.1rem"}>
-							Lireddit
+							Postiodo
 						</Heading>
 					</Link>
 				</Flex>

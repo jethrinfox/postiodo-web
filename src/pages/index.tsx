@@ -34,9 +34,11 @@ const Index = () => {
 			<Stack spacing={8}>
 				{!data && fetching ? (
 					<>
-						<Skeleton height='50px' />
-						<Skeleton height='50px' />
-						<Skeleton height='50px' />
+						<Skeleton height='70px' />
+						<Skeleton height='70px' />
+						<Skeleton height='70px' />
+						<Skeleton height='70px' />
+						<Skeleton height='70px' />
 					</>
 				) : (
 					data?.posts.posts.map((post) => (

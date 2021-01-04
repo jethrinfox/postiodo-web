@@ -11,9 +11,10 @@ export const VoteSection: React.FC<VoteSectionProps> = ({ post }) => {
 	const [{ fetching }, vote] = useVoteMutation();
 
 	const handleVote = (value: number) => {
+		if (value === post.voteStatus) return;
 		vote({
 			value,
-			post: post.id,
+			postId: post.id,
 		});
 	};
 
@@ -26,12 +27,14 @@ export const VoteSection: React.FC<VoteSectionProps> = ({ post }) => {
 			<IconButton
 				onClick={() => handleVote(1)}
 				aria-label='vote post up'
+				colorScheme={post.voteStatus === 1 ? "green" : undefined}
 				icon={<ChevronUpIcon w={6} h={6} />}
 			/>
 			{!fetching ? post.points : <Spinner />}
 			<IconButton
 				onClick={() => handleVote(-1)}
 				aria-label='vote post down'
+				colorScheme={post.voteStatus === -1 ? "red" : undefined}
 				icon={<ChevronDownIcon w={6} h={6} />}
 			/>
 		</Flex>

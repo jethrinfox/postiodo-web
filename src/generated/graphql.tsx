@@ -45,6 +45,7 @@ export type Post = {
   title: Scalars['String'];
   text: Scalars['String'];
   points: Scalars['Float'];
+  voteStatus?: Maybe<Scalars['Int']>;
   creatorId: Scalars['Float'];
   creator: User;
   createdAt: Scalars['String'];
@@ -78,7 +79,7 @@ export type Mutation = {
 
 export type MutationVoteArgs = {
   value: Scalars['Int'];
-  post: Scalars['Int'];
+  postId: Scalars['Int'];
 };
 
 
@@ -149,7 +150,7 @@ export type RegularErrorFragment = (
 
 export type RegularPostFragment = (
   { __typename?: 'Post' }
-  & Pick<Post, 'id' | 'title' | 'text' | 'textSnippet' | 'points' | 'creatorId' | 'createdAt' | 'updatedAt'>
+  & Pick<Post, 'id' | 'title' | 'text' | 'textSnippet' | 'points' | 'voteStatus' | 'creatorId' | 'createdAt' | 'updatedAt'>
   & { creator: (
     { __typename?: 'User' }
     & Pick<User, 'id' | 'username'>
@@ -328,6 +329,7 @@ export const RegularPostFragmentDoc = gql`
   text
   textSnippet
   points
+  voteStatus
   creatorId
   createdAt
   updatedAt
@@ -444,7 +446,7 @@ export function useUpdatePostMutation() {
 };
 export const VoteDocument = gql`
     mutation Vote($value: Int!, $postId: Int!) {
-  vote(value: $value, post: $postId)
+  vote(value: $value, postId: $postId)
 }
     `;
 

@@ -4,6 +4,7 @@ fragment RegularPost on Post {
 	text
 	textSnippet
 	points
+	voteStatus
 	creatorId
 	createdAt
 	updatedAt

@@ -1,7 +1,6 @@
 import React from "react";
 import { Flex, Heading, Box, Button, Text, Link } from "@chakra-ui/react";
 import { useLogOutMutation, useMeQuery } from "../generated/graphql";
-import { isServer } from "../utils/isServer";
 import { useRouter } from "next/router";
 
 const MenuItems = ({ children }: any) => (
@@ -14,9 +13,7 @@ const Header = (props: any) => {
 	const [show, setShow] = React.useState(false);
 	const handleToggle = () => setShow(!show);
 	const [{ fetching: logoutFetching }, logout] = useLogOutMutation();
-	const [{ data, fetching }] = useMeQuery({
-		pause: isServer(),
-	});
+	const [{ data, fetching }] = useMeQuery();
 	const router = useRouter();
 
 	const handleLogout = () => {

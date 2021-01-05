@@ -7,7 +7,6 @@ fragment RegularPost on Post {
 	voteStatus
 	creatorId
 	createdAt
-	updatedAt
 	creator {
 		id
 		username

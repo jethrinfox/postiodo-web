@@ -16,9 +16,9 @@ const Header = (props: any) => {
 	const [{ data, fetching }] = useMeQuery();
 	const router = useRouter();
 
-	const handleLogout = () => {
-		logout();
-		router.push("/login");
+	const handleLogout = async () => {
+		await logout();
+		router.reload();
 	};
 
 	let body = null;

@@ -49,7 +49,10 @@ const Post: React.FC<{}> = ({}) => {
 					<Divider mb={4} />
 					<Box>{data?.post?.text}</Box>
 				</Flex>
-				<EditDeleteSection post={data?.post} />
+				<EditDeleteSection
+					id={data.post.id}
+					creatorId={data.post.creatorId}
+				/>
 			</Flex>
 		</Layout>
 	);

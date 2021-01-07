@@ -24,7 +24,7 @@ const PostSection: React.FC<PostSectionProps> = ({ post }) => {
 				</NextChakraLink>
 				<Text mt={4}>{post.textSnippet}</Text>
 			</Box>
-			<EditDeleteSection post={post} />
+			<EditDeleteSection id={post.id} creatorId={post.creatorId} />
 		</Flex>
 	);
 };

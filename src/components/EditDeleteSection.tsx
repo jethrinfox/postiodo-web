@@ -1,19 +1,17 @@
 import { DeleteIcon, EditIcon } from "@chakra-ui/icons";
-import { Flex, IconButton, Link } from "@chakra-ui/react";
+import { Flex, IconButton } from "@chakra-ui/react";
 import React from "react";
-import {
-	RegularPostFragment,
-	useDeletePostMutation,
-	useMeQuery,
-} from "../generated/graphql";
+import { useDeletePostMutation, useMeQuery } from "../generated/graphql";
 import { NextChakraLink } from "./Link";
 
 interface EditDeleteSectionProps {
-	post: RegularPostFragment;
+	id: number;
+	creatorId: number;
 }
 
 export const EditDeleteSection: React.FC<EditDeleteSectionProps> = ({
-	post,
+	id,
+	creatorId,
 }) => {
 	const [{ data }] = useMeQuery();
 
@@ -24,9 +22,9 @@ export const EditDeleteSection: React.FC<EditDeleteSectionProps> = ({
 			flexDirection='column'
 			justifyContent='center'
 			alignItems='center'>
-			{data?.me?.id !== post.creatorId ? null : (
+			{data?.me?.id !== creatorId ? null : (
 				<>
-					<NextChakraLink mb={4} href={`/post/edit/${post.id}`}>
+					<NextChakraLink mb={4} href={`/post/edit/${id}`}>
 						<IconButton
 							variant='outline'
 							aria-label='edit post'
@@ -35,7 +33,7 @@ export const EditDeleteSection: React.FC<EditDeleteSectionProps> = ({
 					</NextChakraLink>
 					<IconButton
 						variant='outline'
-						onClick={() => deletePost({ id: post.id })}
+						onClick={() => deletePost({ id })}
 						aria-label='delete post'
 						icon={<DeleteIcon w={4} h={4} />}
 					/>

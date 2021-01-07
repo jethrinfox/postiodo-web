@@ -22,7 +22,7 @@ const CreatePost: React.FC<{}> = ({}) => {
 					const { error } = await createPost({ input: values });
 
 					if (!error) {
-						router.push("/");
+						router.back();
 					}
 				}}>
 				{({ isSubmitting }) => (

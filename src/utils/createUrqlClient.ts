@@ -13,6 +13,7 @@ import {
 	MeQuery,
 	VoteMutationVariables,
 	RegisterMutation,
+	DeletePostMutationVariables,
 } from "../generated/graphql";
 import { betterUpdateQuery } from "./betterUpdateQuery";
 import Router from "next/router";
@@ -131,7 +132,7 @@ const cursorPagination = (): Resolver => {
 export const createUrqlClient = (ssrExchange: any, ctx: any) => {
 	let cookie = "";
 	if (isServer()) {
-		cookie = ctx.req.headers.cookie;
+		cookie = ctx?.req?.headers?.cookie;
 	}
 
 	return {
@@ -157,6 +158,12 @@ export const createUrqlClient = (ssrExchange: any, ctx: any) => {
 				},
 				updates: {
 					Mutation: {
+						deletePost: (_result, args, cache, info) => {
+							cache.invalidate({
+								__typename: "Post",
+								id: (args as DeletePostMutationVariables).id,
+							});
+						},
 						vote: (_result, args, cache, info) => {
 							const {
 								postId,

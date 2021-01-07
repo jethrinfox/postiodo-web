@@ -1,7 +1,7 @@
 import { Box, Button, Flex, Skeleton, Stack, Text } from "@chakra-ui/react";
 import { withUrqlClient } from "next-urql";
 import React, { useState } from "react";
-import Feature from "../components/Feature";
+import PostSection from "../components/PostSection";
 import { Layout } from "../components/Layout";
 import { usePostsQuery } from "../generated/graphql";
 import { createUrqlClient } from "../utils/createUrqlClient";
@@ -15,7 +15,21 @@ const Index = () => {
 		variables,
 	});
 
-	if (!fetching && !data) {
+	if (fetching) {
+		return (
+			<Layout>
+				<Stack spacing={8}>
+					<Skeleton height='70px' />
+					<Skeleton height='70px' />
+					<Skeleton height='70px' />
+					<Skeleton height='70px' />
+					<Skeleton height='70px' />
+				</Stack>
+			</Layout>
+		);
+	}
+
+	if (!data) {
 		return (
 			<Layout>
 				<Flex my={8} justifyContent='center'>
@@ -32,21 +46,11 @@ const Index = () => {
 	return (
 		<Layout>
 			<Stack spacing={8}>
-				{!data && fetching ? (
-					<>
-						<Skeleton height='70px' />
-						<Skeleton height='70px' />
-						<Skeleton height='70px' />
-						<Skeleton height='70px' />
-						<Skeleton height='70px' />
-					</>
-				) : (
-					data?.posts.posts.map((post) => (
-						<Feature key={post.id} post={post} />
-					))
+				{data?.posts.posts.map((post) =>
+					!post ? null : <PostSection key={post.id} post={post} />
 				)}
 			</Stack>
-			{data && data.posts.hasMore ? (
+			{data.posts.hasMore ? (
 				<Flex my={8} justifyContent='center'>
 					<Button
 						colorScheme='teal'

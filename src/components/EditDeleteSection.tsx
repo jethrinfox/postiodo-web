@@ -13,9 +13,9 @@ export const EditDeleteSection: React.FC<EditDeleteSectionProps> = ({
 	id,
 	creatorId,
 }) => {
-	const [{ data }] = useMeQuery();
+	const { data } = useMeQuery();
 
-	const [, deletePost] = useDeletePostMutation();
+	const [deletePost] = useDeletePostMutation();
 
 	return (
 		<Flex
@@ -33,7 +33,14 @@ export const EditDeleteSection: React.FC<EditDeleteSectionProps> = ({
 					</NextChakraLink>
 					<IconButton
 						variant='outline'
-						onClick={() => deletePost({ id })}
+						onClick={() =>
+							deletePost({
+								variables: { id },
+								update: (cache) => {
+									cache.evict({ id: "Post:" + id });
+								},
+							})
+						}
 						aria-label='delete post'
 						icon={<DeleteIcon w={4} h={4} />}
 					/>

@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import { Flex, Heading, Box, Button, Text, Link } from "@chakra-ui/react";
 import { useLogOutMutation, useMeQuery } from "../generated/graphql";
-import { useRouter } from "next/router";
+import { isServer } from "../utils/isServer";
+import { useApolloClient } from "@apollo/client";
 
 const MenuItems = ({ children }: any) => (
 	<Text mt={{ base: 4, md: 0 }} mr={6} display='block'>
@@ -10,20 +11,22 @@ const MenuItems = ({ children }: any) => (
 );
 
 const Header = (props: any) => {
-	const [show, setShow] = React.useState(false);
+	const [show, setShow] = useState(false);
 	const handleToggle = () => setShow(!show);
-	const [{ fetching: logoutFetching }, logout] = useLogOutMutation();
-	const [{ data, fetching }] = useMeQuery();
-	const router = useRouter();
+	const [logout, { loading: logoutFetching }] = useLogOutMutation();
+	const apolloClient = useApolloClient();
+	const { data, loading } = useMeQuery({
+		skip: isServer(),
+	});
 
 	const handleLogout = async () => {
 		await logout();
-		router.reload();
+		await apolloClient.resetStore();
 	};
 
 	let body = null;
 	// data is loading
-	if (fetching) {
+	if (loading) {
 		body = null;
 		// user not logged in
 	} else if (!data?.me) {

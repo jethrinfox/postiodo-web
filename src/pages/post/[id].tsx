@@ -1,17 +1,16 @@
-import { Flex, Stack, Skeleton, Box, Heading, Divider } from "@chakra-ui/react";
-import { withUrqlClient } from "next-urql";
+import { Box, Divider, Flex, Heading, Skeleton, Stack } from "@chakra-ui/react";
 import React from "react";
 import { EditDeleteSection } from "../../components/EditDeleteSection";
 import { Layout } from "../../components/Layout";
 import { NextChakraLink } from "../../components/Link";
 import { VoteSection } from "../../components/VoteSection";
-import { createUrqlClient } from "../../utils/createUrqlClient";
 import { useGetPostFromInt } from "../../utils/useGetPostFromInt";
+import withApollo from "../../utils/withApollo";
 
 const Post: React.FC<{}> = ({}) => {
-	const [{ data, fetching }] = useGetPostFromInt();
+	const { data, loading } = useGetPostFromInt();
 
-	if (fetching) {
+	if (loading) {
 		return (
 			<Layout>
 				<Stack spacing={8}>
@@ -58,4 +57,4 @@ const Post: React.FC<{}> = ({}) => {
 	);
 };
 
-export default withUrqlClient(createUrqlClient, { ssr: true })(Post);
+export default withApollo({ ssr: true })(Post);

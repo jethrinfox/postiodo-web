@@ -1,18 +1,21 @@
 import { Box, Button, Flex, Link } from "@chakra-ui/react";
-import { Formik, Form } from "formik";
-import { withUrqlClient } from "next-urql";
+import { Form, Formik } from "formik";
 import { useRouter } from "next/router";
 import React, { useState } from "react";
 import { InputField } from "../../components/InputField";
 import { Layout } from "../../components/Layout";
-import { useChangepasswordMutation } from "../../generated/graphql";
-import { createUrqlClient } from "../../utils/createUrqlClient";
+import {
+	MeDocument,
+	MeQuery,
+	useChangepasswordMutation,
+} from "../../generated/graphql";
 import { toErrorMap } from "../../utils/toErrorMap";
+import withApollo from "../../utils/withApollo";
 
 const ChangePassword: React.FC<{}> = ({}) => {
 	const router = useRouter();
-	const [, changePassword] = useChangepasswordMutation();
 	const [tokenError, setTokenError] = useState("");
+	const [changePassword] = useChangepasswordMutation();
 
 	return (
 		<Layout variant='small'>
@@ -20,11 +23,23 @@ const ChangePassword: React.FC<{}> = ({}) => {
 				initialValues={{ newPassword: "" }}
 				onSubmit={async ({ newPassword }, { setErrors }) => {
 					const response = await changePassword({
-						token:
-							typeof router.query.token === "string"
-								? router.query.token
-								: "",
-						newPassword,
+						variables: {
+							token:
+								typeof router.query.token === "string"
+									? router.query.token
+									: "",
+							newPassword,
+						},
+						update: (cache, { data }) => {
+							cache.writeQuery<MeQuery>({
+								query: MeDocument,
+								data: {
+									__typename: "Query",
+									me: data?.changePassword.user,
+								},
+							});
+							cache.evict({ fieldName: "posts:{}" });
+						},
 					});
 					if (response.data?.changePassword.errors) {
 						const errorMap = toErrorMap(
@@ -69,4 +84,4 @@ const ChangePassword: React.FC<{}> = ({}) => {
 	);
 };
 
-export default withUrqlClient(createUrqlClient)(ChangePassword);
+export default withApollo({ ssr: false })(ChangePassword);

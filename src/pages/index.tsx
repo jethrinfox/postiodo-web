@@ -1,21 +1,20 @@
 import { Box, Button, Flex, Skeleton, Stack, Text } from "@chakra-ui/react";
-import { withUrqlClient } from "next-urql";
-import React, { useState } from "react";
-import PostSection from "../components/PostSection";
+import React from "react";
 import { Layout } from "../components/Layout";
+import PostSection from "../components/PostSection";
 import { usePostsQuery } from "../generated/graphql";
-import { createUrqlClient } from "../utils/createUrqlClient";
+import withApollo from "../utils/withApollo";
 
 const Index = () => {
-	const [variables, setVariables] = useState({
-		limit: 5,
-		cursor: null as null | string,
-	});
-	const [{ data, fetching }] = usePostsQuery({
-		variables,
+	const { data, loading, fetchMore, variables } = usePostsQuery({
+		variables: {
+			limit: 5,
+			cursor: null,
+		},
+		notifyOnNetworkStatusChange: true,
 	});
 
-	if (fetching) {
+	if (loading) {
 		return (
 			<Layout>
 				<Stack spacing={8}>
@@ -55,15 +54,17 @@ const Index = () => {
 					<Button
 						colorScheme='teal'
 						onClick={() =>
-							setVariables({
-								limit: variables.limit,
-								cursor:
-									data?.posts.posts[
-										data.posts.posts.length - 1
-									].createdAt,
+							fetchMore({
+								variables: {
+									limit: variables?.limit,
+									cursor:
+										data?.posts.posts[
+											data.posts.posts.length - 1
+										].createdAt,
+								},
 							})
 						}
-						isLoading={fetching}>
+						isLoading={loading}>
 						Load more...
 					</Button>
 				</Flex>
@@ -72,4 +73,4 @@ const Index = () => {
 	);
 };
 
-export default withUrqlClient(createUrqlClient, { ssr: true })(Index);
+export default withApollo({ ssr: true })(Index);

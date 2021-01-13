@@ -1,22 +1,21 @@
 import { Box, Button, Flex, Skeleton, Stack } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
-import { withUrqlClient } from "next-urql";
 import { useRouter } from "next/router";
 import React from "react";
 import { InputField } from "../../../components/InputField";
 import { Layout } from "../../../components/Layout";
 import { useUpdatePostMutation } from "../../../generated/graphql";
-import { createUrqlClient } from "../../../utils/createUrqlClient";
 import { useGetPostFromInt } from "../../../utils/useGetPostFromInt";
 import { useIsAuth } from "../../../utils/useIsAuth";
+import withApollo from "../../../utils/withApollo";
 
 const EditPost: React.FC<{}> = ({}) => {
 	useIsAuth();
 	const router = useRouter();
-	const [, updatePost] = useUpdatePostMutation();
-	const [{ data, fetching }] = useGetPostFromInt();
+	const [updatePost] = useUpdatePostMutation();
+	const { data, loading } = useGetPostFromInt();
 
-	if (fetching) {
+	if (loading) {
 		return (
 			<Layout variant='small'>
 				<Stack spacing={8}>
@@ -45,8 +44,10 @@ const EditPost: React.FC<{}> = ({}) => {
 				}}
 				onSubmit={async ({ title, text }) => {
 					await updatePost({
-						id: data.post?.id!,
-						input: { text: text!, title: title! },
+						variables: {
+							id: data.post?.id!,
+							input: { text: text!, title: title! },
+						},
 					});
 					router.back();
 				}}>
@@ -80,4 +81,4 @@ const EditPost: React.FC<{}> = ({}) => {
 	);
 };
 
-export default withUrqlClient(createUrqlClient)(EditPost);
+export default withApollo({ ssr: false })(EditPost);
